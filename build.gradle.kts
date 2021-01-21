@@ -1,12 +1,17 @@
 plugins {
     kotlin("jvm") version "1.4.21"
+    id("org.gradle.maven-publish")
 }
 
 group = "nl.jvhaastert"
-version = "0.0.1"
+version = "0.1.0"
 
 kotlin {
     explicitApi()
+}
+
+java {
+    withSourcesJar()
 }
 
 repositories {
@@ -26,6 +31,18 @@ sourceSets {
         kotlin {
             compileClasspath += main.get().output + configurations.testCompileClasspath
             runtimeClasspath += main.get().output + configurations.testRuntimeClasspath
+        }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("java") {
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
+
+            from(components["java"])
         }
     }
 }
