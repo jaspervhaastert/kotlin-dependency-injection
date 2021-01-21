@@ -2,7 +2,9 @@ package nl.jvhaastert.dependencyinjection.implementations
 
 import nl.jvhaastert.dependencyinjection.models.ServiceSupplier
 
-internal class ServiceSupplierSet : MutableSet<ServiceSupplier<*>> by mutableSetOf() {
+internal class ServiceSuppliers(
+    private val set: MutableSet<ServiceSupplier<*>> = mutableSetOf()
+) : MutableSet<ServiceSupplier<*>> by set {
 
     fun <T> singleOrNull(predicate: (ServiceSupplier<T>) -> Boolean): ServiceSupplier<T>? {
         return filterIsInstance<ServiceSupplier<T>>().singleOrNull(predicate)

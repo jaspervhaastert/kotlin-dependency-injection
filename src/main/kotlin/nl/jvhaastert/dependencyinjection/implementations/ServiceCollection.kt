@@ -6,7 +6,7 @@ import nl.jvhaastert.dependencyinjection.models.ServiceSupplier
 
 internal class ServiceCollection : ServiceCollection {
 
-    internal val serviceSuppliers = ServiceSupplierSet()
+    internal val serviceSuppliers = ServiceSuppliers()
 
     override fun <T> get(serviceClass: Class<T>): Supplier<T>? {
         return serviceSuppliers.singleOrNull<T> { it.serviceClass == serviceClass }?.supplier
