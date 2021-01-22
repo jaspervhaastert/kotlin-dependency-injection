@@ -1,3 +1,5 @@
 package nl.jvhaastert.dependencyinjection
 
-public typealias Supplier<T> = () -> T
+import nl.jvhaastert.dependencyinjection.abstractions.ServiceProvider
+
+public typealias Supplier<T> = ServiceProvider.() -> T

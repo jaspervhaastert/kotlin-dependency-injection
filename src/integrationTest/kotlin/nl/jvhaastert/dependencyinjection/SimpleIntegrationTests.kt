@@ -3,6 +3,7 @@ package nl.jvhaastert.dependencyinjection
 import nl.jvhaastert.dependencyinjection.abstractions.ServiceCollection
 import nl.jvhaastert.dependencyinjection.abstractions.ServiceProvider
 import nl.jvhaastert.dependencyinjection.exceptions.NoServiceSupplierFoundException
+import nl.jvhaastert.dependencyinjection.extensions.getRequired
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -12,12 +13,12 @@ class SimpleIntegrationTests {
     @Test
     fun `the one where it's tried to retrieve an existent service`() {
         val serviceCollection = ServiceCollection.create()
-        serviceCollection[String::class.java] = { "Value" }
+        serviceCollection[TestServiceA::class.java] = { TestServiceA() }
         val serviceProvider = ServiceProvider.create(serviceCollection)
 
-        val result = serviceProvider.get(String::class.java)
+        val result = serviceProvider.get(TestServiceA::class.java)
 
-        assertEquals("Value", result)
+        assertNotNull(result)
     }
 
     @Test
@@ -25,7 +26,7 @@ class SimpleIntegrationTests {
         val serviceCollection = ServiceCollection.create()
         val serviceProvider = ServiceProvider.create(serviceCollection)
 
-        val result = serviceProvider.get(String::class.java)
+        val result = serviceProvider.get(TestServiceA::class.java)
 
         assertNull(result)
     }
@@ -33,12 +34,24 @@ class SimpleIntegrationTests {
     @Test
     fun `the one where an existent service is retrieved`() {
         val serviceCollection = ServiceCollection.create()
-        serviceCollection[String::class.java] = { "Value" }
+        serviceCollection[TestServiceA::class.java] = { TestServiceA() }
         val serviceProvider = ServiceProvider.create(serviceCollection)
 
-        val result = serviceProvider.getRequired(String::class.java)
+        val result = serviceProvider.getRequired(TestServiceA::class.java)
 
-        assertEquals("Value", result)
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `the one where an existent service with existent service parameter is retrieved`() {
+        val serviceCollection = ServiceCollection.create()
+        serviceCollection[TestServiceA::class.java] = { TestServiceA() }
+        serviceCollection[TestServiceB::class.java] = { TestServiceB(getRequired()) }
+        val serviceProvider = ServiceProvider.create(serviceCollection)
+
+        val result = serviceProvider.getRequired(TestServiceB::class.java)
+
+        assertNotNull(result)
     }
 
     @Test
@@ -46,7 +59,7 @@ class SimpleIntegrationTests {
         val serviceCollection = ServiceCollection.create()
         val serviceProvider = ServiceProvider.create(serviceCollection)
 
-        fun act() = serviceProvider.getRequired(String::class.java)
+        fun act() = serviceProvider.getRequired(TestServiceA::class.java)
 
         assertThrows(NoServiceSupplierFoundException::class.java, ::act)
     }

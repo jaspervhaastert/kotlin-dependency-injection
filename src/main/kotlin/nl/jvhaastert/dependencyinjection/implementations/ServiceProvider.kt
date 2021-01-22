@@ -10,12 +10,11 @@ internal class ServiceProvider(
 
     override fun <T> get(serviceClass: Class<T>): T? {
         val supplier = services[serviceClass]
-        return supplier?.invoke()
+        return if (supplier != null) supplier() else null
     }
 
     override fun <T> getRequired(serviceClass: Class<T>): T {
-        val supplier = services[serviceClass]
-        return supplier?.invoke() ?: throw NoServiceSupplierFoundException(serviceClass)
+        return get(serviceClass) ?: throw NoServiceSupplierFoundException(serviceClass)
     }
 
 }
