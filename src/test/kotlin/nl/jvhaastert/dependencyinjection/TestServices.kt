@@ -1,3 +1,3 @@
 package nl.jvhaastert.dependencyinjection
 
-class TestServiceA
+class TestService

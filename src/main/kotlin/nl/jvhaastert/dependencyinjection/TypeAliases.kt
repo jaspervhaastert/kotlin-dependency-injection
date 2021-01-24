@@ -2,4 +2,4 @@ package nl.jvhaastert.dependencyinjection
 
 import nl.jvhaastert.dependencyinjection.abstractions.ServiceProvider
 
-public typealias Supplier<T> = ServiceProvider.() -> T
+public typealias Factory<T> = ServiceProvider.() -> T
