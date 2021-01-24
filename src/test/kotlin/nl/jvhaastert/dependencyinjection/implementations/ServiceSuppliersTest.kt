@@ -2,6 +2,7 @@ package nl.jvhaastert.dependencyinjection.implementations
 
 import nl.jvhaastert.dependencyinjection.any
 import nl.jvhaastert.dependencyinjection.mock
+import nl.jvhaastert.dependencyinjection.models.FactoryServiceSupplier
 import nl.jvhaastert.dependencyinjection.models.ServiceSupplier
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -26,12 +27,12 @@ class ServiceSuppliersTest {
     //region singleOrNull
     @Test
     fun `singleOrNull with existent ServiceSupplier should return correct ServiceSupplier`() {
-        val serviceSuppliers = mutableSetOf<ServiceSupplier<*>>(
-            ServiceSupplier(String::class.java) { "String" },
-            ServiceSupplier(Int::class.java) { 1 }
+        val serviceSuppliers = mutableSetOf<FactoryServiceSupplier<*>>(
+            FactoryServiceSupplier(String::class.java) { "String" },
+            FactoryServiceSupplier(Int::class.java) { 1 }
         )
         whenever(setMock.iterator()).thenReturn(serviceSuppliers.iterator())
-        val expectedServiceSupplier = ServiceSupplier(String::class.java) { "String" }
+        val expectedServiceSupplier = FactoryServiceSupplier(String::class.java) { "String" }
 
         val result = sut.singleOrNull<String> { s -> s.serviceClass == String::class.java }
 
@@ -40,8 +41,8 @@ class ServiceSuppliersTest {
 
     @Test
     fun `singleOrNull with non-existent ServiceSupplier should return null`() {
-        val serviceSuppliers = mutableSetOf<ServiceSupplier<*>>(
-            ServiceSupplier(Int::class.java) { 1 }
+        val serviceSuppliers = mutableSetOf<FactoryServiceSupplier<*>>(
+            FactoryServiceSupplier(Int::class.java) { 1 }
         )
         whenever(setMock.iterator()).thenReturn(serviceSuppliers.iterator())
 
@@ -55,7 +56,7 @@ class ServiceSuppliersTest {
     @Test
     fun `plusAssign with non-existent serviceSupplier should add to set`() {
         whenever(setMock.contains(any())).thenReturn(false)
-        val serviceSupplier = ServiceSupplier(String::class.java) { "String" }
+        val serviceSupplier = FactoryServiceSupplier(String::class.java) { "String" }
 
         sut.plusAssign(serviceSupplier)
 
@@ -67,7 +68,7 @@ class ServiceSuppliersTest {
     @Test
     fun `plusAssign with existent serviceSupplier should replace in set`() {
         whenever(setMock.contains(any())).thenReturn(true)
-        val serviceSupplier = ServiceSupplier(String::class.java) { "String" }
+        val serviceSupplier = FactoryServiceSupplier(String::class.java) { "String" }
 
         sut.plusAssign(serviceSupplier)
 

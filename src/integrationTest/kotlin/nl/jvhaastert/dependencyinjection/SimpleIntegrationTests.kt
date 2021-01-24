@@ -11,14 +11,26 @@ import org.junit.jupiter.api.Test
 class SimpleIntegrationTests {
 
     @Test
-    fun `the one where it's tried to retrieve an existent service`() {
+    fun `the one where it's tried to retrieve an existent service with factory supplier`() {
         val serviceCollection = ServiceCollection.create()
-        serviceCollection[TestServiceA::class.java] = { TestServiceA() }
+        serviceCollection.addFactory(TestServiceA::class.java) { TestServiceA() }
         val serviceProvider = ServiceProvider.create(serviceCollection)
 
         val result = serviceProvider.get(TestServiceA::class.java)
 
-        assertNotNull(result)
+        assertInstanceOf<TestServiceA>(result)
+    }
+
+    @Test
+    fun `the one where it's tried to retrieve an existent service with singleton supplier`() {
+        val serviceCollection = ServiceCollection.create()
+        val testService = TestServiceA()
+        serviceCollection.addSingleton(TestServiceA::class.java, testService)
+        val serviceProvider = ServiceProvider.create(serviceCollection)
+
+        val result = serviceProvider.get(TestServiceA::class.java)
+
+        assertEquals(testService, result)
     }
 
     @Test
@@ -32,21 +44,33 @@ class SimpleIntegrationTests {
     }
 
     @Test
-    fun `the one where an existent service is retrieved`() {
+    fun `the one where an existent service is retrieved with factory supplier`() {
         val serviceCollection = ServiceCollection.create()
-        serviceCollection[TestServiceA::class.java] = { TestServiceA() }
+        serviceCollection.addFactory(TestServiceA::class.java) { TestServiceA() }
         val serviceProvider = ServiceProvider.create(serviceCollection)
 
         val result = serviceProvider.getRequired(TestServiceA::class.java)
 
-        assertNotNull(result)
+        assertInstanceOf<TestServiceA>(result)
     }
 
     @Test
-    fun `the one where an existent service with existent service parameter is retrieved`() {
+    fun `the one where an existent service is retrieved with singleton supplier`() {
         val serviceCollection = ServiceCollection.create()
-        serviceCollection[TestServiceA::class.java] = { TestServiceA() }
-        serviceCollection[TestServiceB::class.java] = { TestServiceB(getRequired()) }
+        val testService = TestServiceA()
+        serviceCollection.addSingleton(TestServiceA::class.java, testService)
+        val serviceProvider = ServiceProvider.create(serviceCollection)
+
+        val result = serviceProvider.getRequired(TestServiceA::class.java)
+
+        assertEquals(testService, result)
+    }
+
+    @Test
+    fun `the one where an existent service with existent service parameter is retrieved with factory supplier`() {
+        val serviceCollection = ServiceCollection.create()
+        serviceCollection.addFactory(TestServiceA::class.java) { TestServiceA() }
+        serviceCollection.addFactory(TestServiceB::class.java) { TestServiceB(getRequired()) }
         val serviceProvider = ServiceProvider.create(serviceCollection)
 
         val result = serviceProvider.getRequired(TestServiceB::class.java)

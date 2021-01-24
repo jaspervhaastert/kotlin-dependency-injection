@@ -1,7 +1,7 @@
 package nl.jvhaastert.dependencyinjection.implementations
 
-import nl.jvhaastert.dependencyinjection.Supplier
-import nl.jvhaastert.dependencyinjection.models.ServiceSupplier
+import nl.jvhaastert.dependencyinjection.Factory
+import nl.jvhaastert.dependencyinjection.models.FactoryServiceSupplier
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
@@ -20,19 +20,19 @@ class ServiceCollectionTest {
     //region get
     @Test
     fun `get with existent serviceClass should return correct Supplier`() {
-        val supplier: Supplier<String> = { "Value" }
-        sut.serviceSuppliers.add(ServiceSupplier(String::class.java, supplier))
+        val factoryServiceSupplier = FactoryServiceSupplier(String::class.java) { "Value" }
+        sut.serviceSuppliers.add(factoryServiceSupplier)
 
-        val result = sut[String::class.java]
+        val result = sut.get(String::class.java)
 
-        assertEquals(supplier, result)
+        assertEquals(factoryServiceSupplier, result)
     }
 
     @Test
     fun `get with non-existent serviceClass should return null`() {
         // No arrange
 
-        val result = sut[String::class.java]
+        val result = sut.get(String::class.java)
 
         assertNull(result)
     }
@@ -41,21 +41,21 @@ class ServiceCollectionTest {
     //region set
     @Test
     fun `set with non-existent serviceClass should add correct ServiceSupplier`() {
-        val supplier: Supplier<String> = { "Value" }
-        val expectedServiceSupplier = ServiceSupplier(String::class.java, supplier)
+        val factory: Factory<String> = { "Value" }
+        val expectedServiceSupplier = FactoryServiceSupplier(String::class.java, factory)
 
-        sut[String::class.java] = supplier
+        sut.addFactory(String::class.java, factory)
 
         assertEquals(expectedServiceSupplier, sut.serviceSuppliers.single { it.serviceClass == String::class.java })
     }
 
     @Test
     fun `set with existent serviceClass should overwrite ServiceSupplier`() {
-        sut.serviceSuppliers.add(ServiceSupplier(String::class.java) { "Old value" })
-        val newSupplier: Supplier<String> = { "New value" }
-        val expectedServiceSupplier = ServiceSupplier(String::class.java, newSupplier)
+        sut.serviceSuppliers.add(FactoryServiceSupplier(String::class.java) { "Old value" })
+        val newFactory: Factory<String> = { "New value" }
+        val expectedServiceSupplier = FactoryServiceSupplier(String::class.java, newFactory)
 
-        sut[String::class.java] = newSupplier
+        sut.addFactory(String::class.java, newFactory)
 
         assertEquals(1, sut.serviceSuppliers.size)
         assertEquals(expectedServiceSupplier, sut.serviceSuppliers.single())

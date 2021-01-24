@@ -1,11 +1,12 @@
 package nl.jvhaastert.dependencyinjection.models
 
-import nl.jvhaastert.dependencyinjection.Supplier
+import nl.jvhaastert.dependencyinjection.abstractions.ServiceProvider
 
-internal data class ServiceSupplier<T>(
-    val serviceClass: Class<T>,
-    val supplier: Supplier<T>
+public abstract class ServiceSupplier<T>(
+    public val serviceClass: Class<T>
 ) {
+
+    public abstract fun getInstance(serviceProvider: ServiceProvider): T
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
