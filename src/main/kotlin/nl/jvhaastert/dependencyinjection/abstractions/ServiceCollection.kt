@@ -7,6 +7,8 @@ import nl.jvhaastert.dependencyinjection.implementations.ServiceCollection as Se
 public interface ServiceCollection {
 
     public fun <T> get(serviceClass: Class<T>): ServiceSupplier<T>?
+
+    public fun <T> addSingleton(serviceClass: Class<T>, instance: T)
     public fun <T> addFactory(serviceClass: Class<T>, factory: Factory<T>)
 
     public companion object {

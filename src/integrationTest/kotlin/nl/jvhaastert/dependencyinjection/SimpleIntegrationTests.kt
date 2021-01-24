@@ -22,6 +22,18 @@ class SimpleIntegrationTests {
     }
 
     @Test
+    fun `the one where it's tried to retrieve an existent service with singleton supplier`() {
+        val serviceCollection = ServiceCollection.create()
+        val testService = TestServiceA()
+        serviceCollection.addSingleton(TestServiceA::class.java, testService)
+        val serviceProvider = ServiceProvider.create(serviceCollection)
+
+        val result = serviceProvider.get(TestServiceA::class.java)
+
+        assertEquals(testService, result)
+    }
+
+    @Test
     fun `the one where it's tried to retrieve a non-existent service`() {
         val serviceCollection = ServiceCollection.create()
         val serviceProvider = ServiceProvider.create(serviceCollection)
@@ -40,6 +52,18 @@ class SimpleIntegrationTests {
         val result = serviceProvider.getRequired(TestServiceA::class.java)
 
         assertInstanceOf<TestServiceA>(result)
+    }
+
+    @Test
+    fun `the one where an existent service is retrieved with singleton supplier`() {
+        val serviceCollection = ServiceCollection.create()
+        val testService = TestServiceA()
+        serviceCollection.addSingleton(TestServiceA::class.java, testService)
+        val serviceProvider = ServiceProvider.create(serviceCollection)
+
+        val result = serviceProvider.getRequired(TestServiceA::class.java)
+
+        assertEquals(testService, result)
     }
 
     @Test
