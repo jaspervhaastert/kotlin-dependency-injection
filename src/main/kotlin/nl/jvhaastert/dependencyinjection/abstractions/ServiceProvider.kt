@@ -4,8 +4,8 @@ import nl.jvhaastert.dependencyinjection.implementations.ServiceProvider as Serv
 
 public interface ServiceProvider {
 
-    public fun <T> get(serviceClass: Class<T>): T?
-    public fun <T> getRequired(serviceClass: Class<T>): T
+    public fun <T> getOrNull(serviceClass: Class<T>): T?
+    public fun <T> get(serviceClass: Class<T>): T
 
     public companion object {
         public fun create(serviceCollection: ServiceCollection): ServiceProvider =

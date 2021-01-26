@@ -10,7 +10,7 @@ internal class ServiceCollection : ServiceCollection {
 
     internal val serviceSuppliers = ServiceSuppliers()
 
-    override fun <T> get(serviceClass: Class<T>) = serviceSuppliers.singleOrNull<T> { it.serviceClass == serviceClass }
+    override fun <T> getSupplier(serviceClass: Class<T>) = serviceSuppliers.singleOrNull<T> { it.serviceClass == serviceClass }
 
     override fun <T> addSingleton(serviceClass: Class<T>, instance: T) {
         val serviceSupplier = InstanceServiceSupplier(serviceClass, instance)

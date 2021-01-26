@@ -19,13 +19,13 @@ class ServiceCollectionTest {
         sut = ServiceCollection()
     }
 
-    //region get
+    //region getSupplier
     @Test
     fun `get with existent serviceClass should return correct Supplier`() {
         val factoryServiceSupplier = FactoryServiceSupplier(String::class.java) { "Value" }
         sut.serviceSuppliers.add(factoryServiceSupplier)
 
-        val result = sut.get(String::class.java)
+        val result = sut.getSupplier(String::class.java)
 
         assertEquals(factoryServiceSupplier, result)
     }
@@ -34,7 +34,7 @@ class ServiceCollectionTest {
     fun `get with non-existent serviceClass should return null`() {
         // No arrange
 
-        val result = sut.get(String::class.java)
+        val result = sut.getSupplier(String::class.java)
 
         assertNull(result)
     }
