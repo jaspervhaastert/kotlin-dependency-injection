@@ -26,15 +26,6 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
 }
 
-sourceSets {
-    create("integrationTest") {
-        kotlin {
-            compileClasspath += main.get().output + configurations.testCompileClasspath
-            runtimeClasspath += main.get().output + configurations.testRuntimeClasspath
-        }
-    }
-}
-
 publishing {
     repositories {
         maven {
@@ -57,19 +48,6 @@ publishing {
     }
 }
 
-tasks.withType(Test::class.java) {
+tasks.test {
     useJUnitPlatform()
-}
-
-val integrationTest = task<Test>("integrationTest") {
-    description = "Runs integration tests."
-    group = "verification"
-
-    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
-    classpath = sourceSets["integrationTest"].runtimeClasspath
-    shouldRunAfter("test")
-}
-
-tasks.check {
-    dependsOn(integrationTest)
 }
