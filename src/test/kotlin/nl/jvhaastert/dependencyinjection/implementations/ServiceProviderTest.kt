@@ -24,43 +24,43 @@ class ServiceProviderTest {
         sut = ServiceProvider(serviceCollectionMock)
     }
 
-    //region get
+    //region getOrNull
     @Test
     fun `get with existent serviceClass should return correct instance`() {
         val serviceSupplierMock = FactoryServiceSupplier(TestService::class.java) { TestService() }
-        whenever(serviceCollectionMock.get<TestService>(any())).thenReturn(serviceSupplierMock)
+        whenever(serviceCollectionMock.getSupplier<TestService>(any())).thenReturn(serviceSupplierMock)
 
-        val result = sut.get(TestService::class.java)
+        val result = sut.getOrNull(TestService::class.java)
 
         assertInstanceOf<TestService>(result)
     }
 
     @Test
     fun `get with non-existent serviceClass should return null`() {
-        whenever(serviceCollectionMock.get<TestService>(any())).thenReturn(null)
+        whenever(serviceCollectionMock.getSupplier<TestService>(any())).thenReturn(null)
 
-        val result = sut.get(TestService::class.java)
+        val result = sut.getOrNull(TestService::class.java)
 
         assertNull(result)
     }
     //endregion
 
-    //region getRequired
+    //region get
     @Test
     fun `getRequired with existent serviceClass should return correct instance`() {
         val serviceSupplierMock = FactoryServiceSupplier(TestService::class.java) { TestService() }
-        whenever(serviceCollectionMock.get<TestService>(any())).thenReturn(serviceSupplierMock)
+        whenever(serviceCollectionMock.getSupplier<TestService>(any())).thenReturn(serviceSupplierMock)
 
-        val result = sut.getRequired(TestService::class.java)
+        val result = sut.get(TestService::class.java)
 
         assertInstanceOf<TestService>(result)
     }
 
     @Test
     fun `getRequired with non-existent serviceClass should throw NoServiceSupplierFoundException`() {
-        whenever(serviceCollectionMock.get<TestService>(any())).thenReturn(null)
+        whenever(serviceCollectionMock.getSupplier<TestService>(any())).thenReturn(null)
 
-        fun act() = sut.getRequired(TestService::class.java)
+        fun act() = sut.get(TestService::class.java)
 
         val exception = assertThrows(NoServiceSupplierFoundException::class.java, ::act)
         assertEquals("No service supplier found for type TestService", exception.message)

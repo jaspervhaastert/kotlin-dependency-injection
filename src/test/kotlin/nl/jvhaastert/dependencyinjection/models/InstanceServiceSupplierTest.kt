@@ -6,13 +6,13 @@ import nl.jvhaastert.dependencyinjection.mock
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class SingletonServiceSupplierTest {
+class InstanceServiceSupplierTest {
 
     @Test
     fun `getInstance should return same instance as passed in the constructor`() {
         val serviceProviderMock: ServiceProvider = mock()
         val testService = TestService()
-        val sut = SingletonServiceSupplier(TestService::class.java, testService)
+        val sut = InstanceServiceSupplier(TestService::class.java, testService)
 
         val result = sut.getInstance(serviceProviderMock)
 

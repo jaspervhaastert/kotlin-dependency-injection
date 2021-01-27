@@ -6,13 +6,51 @@ import nl.jvhaastert.dependencyinjection.implementations.ServiceCollection as Se
 
 public interface ServiceCollection {
 
-    public fun <T> get(serviceClass: Class<T>): ServiceSupplier<T>?
+    /**
+     * Gets the [ServiceSupplier] for the given service class.
+     *
+     * @param[T] The type of service for which to get the [ServiceSupplier].
+     * @param[serviceClass] The service class for which to get the [ServiceSupplier].
+     * @return The [ServiceSupplier] when found or else `null`.
+     */
+    public fun <T> getSupplier(serviceClass: Class<T>): ServiceSupplier<T>?
 
+    /**
+     * Adds a singleton [ServiceSupplier] with the given instance.
+     *
+     * @param[T] The type of service for which to add a [ServiceSupplier].
+     * @param[serviceClass] The service class for which to add a [ServiceSupplier].
+     * @param[instance] An instance of [T] to add.
+     */
     public fun <T> addSingleton(serviceClass: Class<T>, instance: T)
+
+    /**
+     * Adds a lazy singleton [ServiceSupplier] with the given factory.
+     *
+     * @param[T] The type of service for which to add a [ServiceSupplier].
+     * @param[serviceClass] The service class for which to add a [ServiceSupplier].
+     * @param[factory] The [Factory] to add.
+     */
+    public fun <T> addSingleton(serviceClass: Class<T>, factory: Factory<T>)
+
+    /**
+     * Adds a factory [ServiceSupplier].
+     *
+     * @param[T] The type of service for which to add a [ServiceSupplier].
+     * @param[serviceClass] The service class for which to add a [ServiceSupplier].
+     * @param[factory] The [Factory] to add.
+     */
     public fun <T> addFactory(serviceClass: Class<T>, factory: Factory<T>)
 
     public companion object {
+
+        /**
+         * Creates a default [ServiceCollection].
+         *
+         * @return A new [ServiceCollection] instance.
+         */
         public fun create(): ServiceCollection = ServiceCollectionImpl()
+
     }
 
 }
