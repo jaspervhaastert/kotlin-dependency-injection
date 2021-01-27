@@ -7,18 +7,20 @@ import nl.jvhaastert.dependencyinjection.implementations.ServiceProvider as Serv
 public interface ServiceProvider {
 
     /**
-     * Tries to get an instance for the given service class.
+     * Tries to get an instance for the given service type.
      *
+     * @param[T] The type of service for which to get an instance.
      * @param[serviceClass] The service class for which to get an instance.
-     * @return An instance of [serviceClass] or null when no [ServiceSupplier] is found.
+     * @return An instance of [T] or null when no [ServiceSupplier] for the given [serviceClass] can be found.
      */
     public fun <T> getOrNull(serviceClass: Class<T>): T?
 
     /**
      * Gets an instance for the given service class.
      *
+     * @param[T] The type of service for which to get an instance.
      * @param[serviceClass] The service class for which to get an instance.
-     * @return An instance of the service class
+     * @return An instance of [T].
      * @throws[NoServiceSupplierFoundException] When no [ServiceSupplier] for the given [serviceClass] can be found.
      */
     public fun <T> get(serviceClass: Class<T>): T
@@ -28,7 +30,7 @@ public interface ServiceProvider {
         /**
          * Creates a default [ServiceProvider].
          *
-         * @param[serviceCollection] The [ServiceCollection] to create the [ServiceProvider] with.
+         * @param[serviceCollection] The [ServiceCollection] to use in the new [ServiceProvider].
          * @return A new [ServiceProvider] instance.
          */
         public fun create(serviceCollection: ServiceCollection): ServiceProvider =
