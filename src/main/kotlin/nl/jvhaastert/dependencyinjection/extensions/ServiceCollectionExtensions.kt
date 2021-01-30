@@ -4,6 +4,9 @@ import nl.jvhaastert.dependencyinjection.Factory
 import nl.jvhaastert.dependencyinjection.abstractions.ServiceCollection
 import nl.jvhaastert.dependencyinjection.models.ServiceSupplier
 
+public inline fun <reified T> ServiceCollection.getAllSuppliers(): List<ServiceSupplier<out T>> =
+    getAllSuppliers(T::class.java)
+
 public inline fun <reified T> ServiceCollection.getSupplier(): ServiceSupplier<T>? = getSupplier(T::class.java)
 
 public inline fun <reified T> ServiceCollection.addSingleton(instance: T): Unit = addSingleton(T::class.java, instance)

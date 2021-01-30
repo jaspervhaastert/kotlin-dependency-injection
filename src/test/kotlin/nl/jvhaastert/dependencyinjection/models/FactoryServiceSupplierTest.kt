@@ -1,7 +1,7 @@
 package nl.jvhaastert.dependencyinjection.models
 
 import nl.jvhaastert.dependencyinjection.Factory
-import nl.jvhaastert.dependencyinjection.TestService
+import nl.jvhaastert.dependencyinjection.TestServiceA
 import nl.jvhaastert.dependencyinjection.abstractions.ServiceProvider
 import nl.jvhaastert.dependencyinjection.assertInstanceOf
 import nl.jvhaastert.dependencyinjection.mock
@@ -12,12 +12,12 @@ class FactoryServiceSupplierTest {
     @Test
     fun `getInstance should return new instance`() {
         val serviceProviderMock: ServiceProvider = mock()
-        val factory: Factory<TestService> = { TestService() }
-        val sut = FactoryServiceSupplier(TestService::class.java, factory)
+        val factory: Factory<TestServiceA> = { TestServiceA() }
+        val sut = FactoryServiceSupplier(TestServiceA::class.java, factory)
 
         val result = sut.getInstance(serviceProviderMock)
 
-        assertInstanceOf<TestService>(result)
+        assertInstanceOf<TestServiceA>(result)
     }
 
 }

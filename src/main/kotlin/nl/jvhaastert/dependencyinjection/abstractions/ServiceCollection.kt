@@ -7,6 +7,15 @@ import nl.jvhaastert.dependencyinjection.implementations.ServiceCollection as Se
 public interface ServiceCollection {
 
     /**
+     * Gets all [ServiceSupplier]'s for the given service class.
+     *
+     * @param[T] The type of service for which to get the [ServiceSupplier]'s.
+     * @param[serviceClass] The service class for which to get the [ServiceSupplier]'s.
+     * @return A list of 0 or more [ServiceSupplier]'s.
+     */
+    public fun <T> getAllSuppliers(serviceClass: Class<T>): List<ServiceSupplier<out T>>
+
+    /**
      * Gets the [ServiceSupplier] for the given service class.
      *
      * @param[T] The type of service for which to get the [ServiceSupplier].
