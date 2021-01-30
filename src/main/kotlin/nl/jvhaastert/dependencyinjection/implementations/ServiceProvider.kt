@@ -8,6 +8,11 @@ internal class ServiceProvider(
     private val services: ServiceCollection
 ) : ServiceProvider {
 
+    override fun <T> getAll(serviceClass: Class<T>): List<T> {
+        val suppliers = services.getAllSuppliers(serviceClass)
+        return suppliers.map { it.getInstance(this) }
+    }
+
     override fun <T> getOrNull(serviceClass: Class<T>): T? {
         val supplier = services.getSupplier(serviceClass)
         return supplier?.getInstance(this)

@@ -1,52 +1,67 @@
 package nl.jvhaastert.dependencyinjection.implementations
 
-import nl.jvhaastert.dependencyinjection.any
-import nl.jvhaastert.dependencyinjection.mock
+import nl.jvhaastert.dependencyinjection.TestServiceA
+import nl.jvhaastert.dependencyinjection.TestServiceC
 import nl.jvhaastert.dependencyinjection.models.FactoryServiceSupplier
 import nl.jvhaastert.dependencyinjection.models.ServiceSupplier
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyNoMoreInteractions
 import kotlin.properties.Delegates.notNull
-import org.mockito.Mockito.`when` as whenever
 
 class ServiceSuppliersTest {
 
-    private var setMock: MutableSet<ServiceSupplier<*>> by notNull()
+    private var set: MutableSet<ServiceSupplier<*>> by notNull()
     private var sut: ServiceSuppliers by notNull()
 
     @BeforeEach
     fun beforeEach() {
-        setMock = mock()
-        sut = ServiceSuppliers(setMock)
+        set = mutableSetOf()
+        sut = ServiceSuppliers(set)
     }
+
+    //region filter
+    @Test
+    fun `filter should return correct ServiceSupplier list`() {
+        val serviceSupplierA = FactoryServiceSupplier(TestServiceA::class.java) { TestServiceA() }
+        val serviceSupplierC = FactoryServiceSupplier(TestServiceC::class.java) { TestServiceC() }
+        set.add(serviceSupplierA)
+        set.add(serviceSupplierC)
+        val expectedList = listOf(serviceSupplierA)
+
+        val result = sut.filter<TestServiceA> { s -> s.serviceClass == TestServiceA::class.java }
+
+        assertEquals(expectedList, result)
+    }
+
+    @Test
+    fun `filter with non-existent ServiceSupplier's should return empty list`() {
+        // No arrange
+
+        val result = sut.filter<TestServiceA> { s -> s.serviceClass == TestServiceA::class.java }
+
+        assertTrue { result.isEmpty() }
+    }
+    //endregion
 
     //region singleOrNull
     @Test
     fun `singleOrNull with existent ServiceSupplier should return correct ServiceSupplier`() {
-        val serviceSuppliers = mutableSetOf<FactoryServiceSupplier<*>>(
-            FactoryServiceSupplier(String::class.java) { "String" },
-            FactoryServiceSupplier(Int::class.java) { 1 }
-        )
-        whenever(setMock.iterator()).thenReturn(serviceSuppliers.iterator())
-        val expectedServiceSupplier = FactoryServiceSupplier(String::class.java) { "String" }
+        val factoryServiceSupplierA = FactoryServiceSupplier(TestServiceA::class.java) { TestServiceA() }
+        val factoryServiceSupplierC = FactoryServiceSupplier(TestServiceC::class.java) { TestServiceC() }
+        set.add(factoryServiceSupplierA)
+        set.add(factoryServiceSupplierC)
 
-        val result = sut.singleOrNull<String> { s -> s.serviceClass == String::class.java }
+        val result = sut.singleOrNull<TestServiceA> { s -> s.serviceClass == TestServiceA::class.java }
 
-        assertEquals(expectedServiceSupplier, result)
+        assertEquals(factoryServiceSupplierA, result)
     }
 
     @Test
     fun `singleOrNull with non-existent ServiceSupplier should return null`() {
-        val serviceSuppliers = mutableSetOf<FactoryServiceSupplier<*>>(
-            FactoryServiceSupplier(Int::class.java) { 1 }
-        )
-        whenever(setMock.iterator()).thenReturn(serviceSuppliers.iterator())
+        // No arrange
 
-        val result = sut.singleOrNull<String> { s -> s.serviceClass == String::class.java }
+        val result = sut.singleOrNull<TestServiceA> { s -> s.serviceClass == TestServiceA::class.java }
 
         assertNull(result)
     }
@@ -55,27 +70,24 @@ class ServiceSuppliersTest {
     //region plusAssign
     @Test
     fun `plusAssign with non-existent serviceSupplier should add to set`() {
-        whenever(setMock.contains(any())).thenReturn(false)
-        val serviceSupplier = FactoryServiceSupplier(String::class.java) { "String" }
+        val serviceSupplier = FactoryServiceSupplier(TestServiceA::class.java) { TestServiceA() }
+        val expectedSet = setOf(serviceSupplier)
 
         sut.plusAssign(serviceSupplier)
 
-        verify(setMock).contains(serviceSupplier)
-        verify(setMock).add(serviceSupplier)
-        verifyNoMoreInteractions(setMock)
+        assertEquals(expectedSet, set)
     }
 
     @Test
     fun `plusAssign with existent serviceSupplier should replace in set`() {
-        whenever(setMock.contains(any())).thenReturn(true)
-        val serviceSupplier = FactoryServiceSupplier(String::class.java) { "String" }
+        val existingServiceSupplier = FactoryServiceSupplier(TestServiceA::class.java) { TestServiceA() }
+        set.add(existingServiceSupplier)
+        val newServiceSupplier = FactoryServiceSupplier(TestServiceA::class.java) { TestServiceA() }
+        val expectedSet = setOf(newServiceSupplier)
 
-        sut.plusAssign(serviceSupplier)
+        sut.plusAssign(newServiceSupplier)
 
-        verify(setMock).contains(serviceSupplier)
-        verify(setMock).remove(serviceSupplier)
-        verify(setMock).add(serviceSupplier)
-        verifyNoMoreInteractions(setMock)
+        assertEquals(expectedSet, set)
     }
     //endregion
 

@@ -6,6 +6,8 @@ import nl.jvhaastert.dependencyinjection.implementations.ServiceProvider as Serv
 
 public interface ServiceProvider {
 
+    public fun <T> getAll(serviceClass: Class<T>): List<T>
+
     /**
      * Tries to get an instance for the given service type.
      *

@@ -6,6 +6,8 @@ import nl.jvhaastert.dependencyinjection.implementations.ServiceCollection as Se
 
 public interface ServiceCollection {
 
+    public fun <T> getAllSuppliers(serviceClass: Class<T>): List<ServiceSupplier<out T>>
+
     /**
      * Gets the [ServiceSupplier] for the given service class.
      *

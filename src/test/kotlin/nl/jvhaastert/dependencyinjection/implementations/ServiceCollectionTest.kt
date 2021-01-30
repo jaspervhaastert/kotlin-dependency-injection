@@ -1,6 +1,9 @@
 package nl.jvhaastert.dependencyinjection.implementations
 
 import nl.jvhaastert.dependencyinjection.Factory
+import nl.jvhaastert.dependencyinjection.TestServiceA
+import nl.jvhaastert.dependencyinjection.TestServiceB
+import nl.jvhaastert.dependencyinjection.TestServiceC
 import nl.jvhaastert.dependencyinjection.models.FactoryServiceSupplier
 import nl.jvhaastert.dependencyinjection.models.InstanceServiceSupplier
 import nl.jvhaastert.dependencyinjection.models.SingletonFactoryServiceSupplier
@@ -19,15 +22,45 @@ class ServiceCollectionTest {
         sut = ServiceCollection()
     }
 
+    //region getAllSuppliers
+    @Test
+    fun `getAllSuppliers should return correct ServiceSupplier list`() {
+        val serviceSupplierA = FactoryServiceSupplier(TestServiceA::class.java) { TestServiceA() }
+        val serviceSupplierC = FactoryServiceSupplier(TestServiceC::class.java) { TestServiceC() }
+        sut.serviceSuppliers.add(serviceSupplierA)
+        sut.serviceSuppliers.add(serviceSupplierC)
+        val expectedList = listOf(serviceSupplierA)
+
+        val result = sut.getAllSuppliers(TestServiceA::class.java)
+
+        assertEquals(expectedList, result)
+    }
+
+    @Test
+    fun `getAllSuppliers with subclasses should return correct ServiceSupplier list`() {
+        val serviceSupplierA = FactoryServiceSupplier(TestServiceA::class.java) { TestServiceA() }
+        val serviceSupplierB = FactoryServiceSupplier(TestServiceB::class.java) { TestServiceB() }
+        val serviceSupplierC = FactoryServiceSupplier(TestServiceC::class.java) { TestServiceC() }
+        sut.serviceSuppliers.add(serviceSupplierA)
+        sut.serviceSuppliers.add(serviceSupplierB)
+        sut.serviceSuppliers.add(serviceSupplierC)
+        val expectedList = listOf(serviceSupplierA, serviceSupplierB)
+
+        val result = sut.getAllSuppliers(TestServiceA::class.java)
+
+        assertEquals(expectedList, result)
+    }
+    //endregion
+
     //region getSupplier
     @Test
-    fun `get with existent serviceClass should return correct Supplier`() {
-        val factoryServiceSupplier = FactoryServiceSupplier(String::class.java) { "Value" }
-        sut.serviceSuppliers.add(factoryServiceSupplier)
+    fun `get with existent serviceClass should return correct ServiceSupplier`() {
+        val serviceSupplier = FactoryServiceSupplier(String::class.java) { "Value" }
+        sut.serviceSuppliers.add(serviceSupplier)
 
         val result = sut.getSupplier(String::class.java)
 
-        assertEquals(factoryServiceSupplier, result)
+        assertEquals(serviceSupplier, result)
     }
 
     @Test

@@ -1,3 +1,5 @@
 package nl.jvhaastert.dependencyinjection
 
-class TestService
+open class TestServiceA
+class TestServiceB : TestServiceA()
+class TestServiceC
